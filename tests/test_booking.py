@@ -6,6 +6,7 @@ from booking import (
     calculate_total_price,
     apply_seasonal_discount,
     calculate_tax,
+    calculate_final_price,
     get_price_category,
     format_booking_summary,
 )
@@ -41,6 +42,17 @@ def test_get_price_category_mid_range():
 def test_get_price_category_luxury():
     """Over $2000 should be 'luxury'."""
     assert get_price_category(2500) == "luxury"
+
+
+def test_calculate_final_price():
+    """100/night x 3 nights x 2 guests = 600, Jan 15% off = 510, +10% JP tax = 561."""
+    assert calculate_final_price(100.0, 3, 2, 1, "japan") == 561.0
+
+
+def test_calculate_final_price_invalid_input_raises():
+    """Invalid inputs propagate ValueError from sub-functions."""
+    with pytest.raises(ValueError):
+        calculate_final_price(100.0, 0, 2, 1, "japan")  # nights=0
 
 
 def test_format_booking_summary_contains_trip_name():

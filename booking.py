@@ -87,6 +87,29 @@ def calculate_tax(price: float, country: str) -> float:
     return round(price * rate, 2)
 
 
+def calculate_final_price(base_price: float, nights: int, guests: int,
+                          month: int, country: str) -> float:
+    """Calculate the complete final price including discount and tax.
+
+    Args:
+        base_price: Nightly rate per person in USD.
+        nights: Number of nights to stay.
+        guests: Number of guests.
+        month: Month of travel (1=January, 12=December).
+        country: Country name in lowercase (e.g. 'france', 'japan').
+
+    Returns:
+        Final price including seasonal discount and tax as a float.
+
+    Raises:
+        ValueError: If any input is invalid (delegated to sub-functions).
+    """
+    total = calculate_total_price(base_price, nights, guests)
+    discounted = apply_seasonal_discount(total, month)
+    final = discounted + calculate_tax(discounted, country)
+    return final
+
+
 def get_price_category(total_price: float) -> str:
     """Categorise a trip by total price.
 
